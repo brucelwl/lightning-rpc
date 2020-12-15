@@ -1,0 +1,19 @@
+
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.bruce.grpc.demo.entity";
+
+message HelloRequest {
+  string greeting = 1;
+}
+
+message HelloResponse {
+  string reply = 1;
+}
+
+service HelloService {
+  rpc SayHello(HelloRequest) returns (HelloResponse);
+}
+
