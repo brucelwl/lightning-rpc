@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
  * 如果客户端接收到的是ping请求,则直接回复pong
  */
 @ChannelHandler.Sharable
-public class HeartBeatPongHandler extends ChannelInboundHandlerAdapter {
-    private static final Logger log = LoggerFactory.getLogger(HeartBeatPongHandler.class);
+public class ClientHeartBeatHandler extends ChannelInboundHandlerAdapter {
+    private static final Logger log = LoggerFactory.getLogger(ClientHeartBeatHandler.class);
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -39,6 +39,10 @@ public class HeartBeatPongHandler extends ChannelInboundHandlerAdapter {
             if (idleStateEvent.state() == IdleState.ALL_IDLE) {
                 //向服务端发送心跳检测
                 ctx.writeAndFlush("ping");
+            } else if (idleStateEvent.state() == IdleState.READER_IDLE) {
+                //超过指定时间没有读事件,关闭连接
+                log.info("超过心跳时间,关闭和服务端的连接:{}", ctx.channel().remoteAddress());
+                ctx.channel().close();
             }
         } else {
             super.userEventTriggered(ctx, evt);

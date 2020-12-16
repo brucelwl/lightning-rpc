@@ -1,6 +1,6 @@
 package com.bruce.lightning.rpc.client.initial.json;
 
-import com.bruce.lightning.rpc.client.handler.HeartBeatPongHandler;
+import com.bruce.lightning.rpc.client.handler.ClientHeartBeatHandler;
 import com.bruce.lightning.rpc.client.handler.RpcClientHandler;
 import com.bruce.lightning.rpc.common.AppendDelimiterOutboundHandler;
 import com.bruce.lightning.rpc.common.serial.JsonEncodeHandler;
@@ -21,7 +21,7 @@ public class ClientHandlerChannelInitializer extends ChannelInitializer<SocketCh
     ClientJsonDecodeHandler clientJsonDecodeHandler = new ClientJsonDecodeHandler();
     JsonEncodeHandler jsonEncodeHandler = new JsonEncodeHandler();
 
-    HeartBeatPongHandler heartBeatPongHandler = new HeartBeatPongHandler();
+    ClientHeartBeatHandler clientHeartBeatHandler = new ClientHeartBeatHandler();
 
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
@@ -32,7 +32,7 @@ public class ClientHandlerChannelInitializer extends ChannelInitializer<SocketCh
         pipeline.addLast(stringEncoder); //字符串编码器
         pipeline.addLast(appendDelimiterOutboundHandler); //写出添加分隔符处理器
 
-        pipeline.addLast(heartBeatPongHandler);
+        pipeline.addLast(clientHeartBeatHandler);
 
         pipeline.addLast(clientJsonDecodeHandler);
         pipeline.addLast(jsonEncodeHandler);

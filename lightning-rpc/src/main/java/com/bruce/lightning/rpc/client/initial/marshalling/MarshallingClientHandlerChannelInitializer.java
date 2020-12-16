@@ -1,6 +1,6 @@
 package com.bruce.lightning.rpc.client.initial.marshalling;
 
-import com.bruce.lightning.rpc.client.handler.HeartBeatPongHandler;
+import com.bruce.lightning.rpc.client.handler.ClientHeartBeatHandler;
 import com.bruce.lightning.rpc.client.handler.RpcClientHandler;
 import com.bruce.lightning.rpc.common.serial.MarshallingCodeFactory;
 import io.netty.channel.ChannelInitializer;
@@ -10,7 +10,7 @@ import io.netty.handler.timeout.IdleStateHandler;
 
 public class MarshallingClientHandlerChannelInitializer extends ChannelInitializer<SocketChannel> {
 
-    HeartBeatPongHandler heartBeatPongHandler = new HeartBeatPongHandler();
+    ClientHeartBeatHandler clientHeartBeatHandler = new ClientHeartBeatHandler();
 
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
@@ -19,8 +19,8 @@ public class MarshallingClientHandlerChannelInitializer extends ChannelInitializ
         pipeline.addLast(MarshallingCodeFactory.buildMarshallingDecoder());
         pipeline.addLast(MarshallingCodeFactory.buildMarshallingEncoder());
 
-        pipeline.addLast(new IdleStateHandler(0, 0, 5));
-        pipeline.addLast(heartBeatPongHandler);
+        pipeline.addLast(new IdleStateHandler(15, 0, 5));
+        pipeline.addLast(clientHeartBeatHandler);
 
         pipeline.addLast(new RpcClientHandler());
     }

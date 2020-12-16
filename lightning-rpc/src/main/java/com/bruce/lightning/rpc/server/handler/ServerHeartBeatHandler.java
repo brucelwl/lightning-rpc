@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory;
  * </pre>
  */
 @ChannelHandler.Sharable
-public class HeartBeatHandler extends ChannelInboundHandlerAdapter {
-    private static final Logger log = LoggerFactory.getLogger(HeartBeatHandler.class);
+public class ServerHeartBeatHandler extends ChannelInboundHandlerAdapter {
+    private static final Logger log = LoggerFactory.getLogger(ServerHeartBeatHandler.class);
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {

@@ -23,6 +23,11 @@ public class RpcServerHandler extends ChannelInboundHandlerAdapter {
         ctx.writeAndFlush(response);
     }
 
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        log.warn("远程主机主动关闭了连接,{}", ctx.channel().remoteAddress());
+        ctx.close();
+    }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
@@ -31,5 +36,6 @@ public class RpcServerHandler extends ChannelInboundHandlerAdapter {
         } else {
             cause.printStackTrace();
         }
+        ctx.close();
     }
 }

@@ -15,7 +15,13 @@ public class RpcClientHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         log.info("客户端接收:{}", msg);
 
-        DefaultResponseFuture.receive((RpcResponse)msg);
+        DefaultResponseFuture.receive((RpcResponse) msg);
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        log.warn("远程主机主动关闭了连接,{}", ctx.channel().remoteAddress());
+        ctx.close();
     }
 
     @Override
@@ -25,5 +31,6 @@ public class RpcClientHandler extends ChannelInboundHandlerAdapter {
         } else {
             cause.printStackTrace();
         }
+        ctx.close();
     }
 }
