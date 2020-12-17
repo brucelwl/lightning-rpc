@@ -2,6 +2,7 @@ package com.bruce.lightning.rpc.common;
 
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 public class RpcRequest implements Serializable {
 
@@ -34,5 +35,15 @@ public class RpcRequest implements Serializable {
 
     public void setArgs(Object[] args) {
         this.args = args;
+    }
+
+
+    @Override
+    public String toString() {
+        return "RpcRequest{" +
+                "id=" + id +
+                ", fullMethodName='" + fullMethodName + '\'' +
+                ", args=" + Arrays.toString(args) +
+                '}';
     }
 }

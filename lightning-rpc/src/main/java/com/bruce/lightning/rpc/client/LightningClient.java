@@ -5,6 +5,7 @@ import com.bruce.lightning.rpc.client.initial.marshalling.MarshallingClientHandl
 import com.bruce.lightning.rpc.common.RpcRequest;
 import com.bruce.lightning.rpc.common.RpcResponse;
 import com.bruce.lightning.rpc.util.PlatformUtil;
+import com.bruce.lightning.rpc.util.ReflectUtils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -14,6 +15,7 @@ import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.concurrent.DefaultThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +36,10 @@ public class LightningClient {
 
         //String property = DefaultEnvironment.getInstance().getProperty("lightning.rpc.serial.type");
 
+        DefaultThreadFactory workerThreadFactory = new DefaultThreadFactory("RpcClientWorker-");
+        ReflectUtils.set(workerThreadFactory, DefaultThreadFactory.class, "prefix", "RpcClientWorker-");
 
-        workerGroup = PlatformUtil.isLinux() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
+        workerGroup = PlatformUtil.isLinux() ? new EpollEventLoopGroup(workerThreadFactory) : new NioEventLoopGroup(workerThreadFactory);
         Class<? extends SocketChannel> socketChannelClass = PlatformUtil.isLinux() ? EpollSocketChannel.class : NioSocketChannel.class;
         bootstrap = new Bootstrap();
         bootstrap.group(workerGroup)

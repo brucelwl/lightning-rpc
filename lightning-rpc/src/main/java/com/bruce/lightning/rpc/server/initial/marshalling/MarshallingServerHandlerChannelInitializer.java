@@ -19,7 +19,7 @@ public class MarshallingServerHandlerChannelInitializer extends ChannelInitializ
         pipeline.addLast(MarshallingCodeFactory.buildMarshallingEncoder());
 
         //心跳检测机制(这里采用服务端向客户端发送ping机制)
-        pipeline.addLast(new IdleStateHandler(25, 0, 10));
+        pipeline.addLast(new IdleStateHandler(90, 0, 40));
         pipeline.addLast(serverHeartBeatHandler);
 
         pipeline.addLast(new RpcServerHandler());

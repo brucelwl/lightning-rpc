@@ -19,7 +19,7 @@ public class MarshallingClientHandlerChannelInitializer extends ChannelInitializ
         pipeline.addLast(MarshallingCodeFactory.buildMarshallingDecoder());
         pipeline.addLast(MarshallingCodeFactory.buildMarshallingEncoder());
 
-        pipeline.addLast(new IdleStateHandler(15, 0, 5));
+        pipeline.addLast(new IdleStateHandler(60, 0, 25));
         pipeline.addLast(clientHeartBeatHandler);
 
         pipeline.addLast(new RpcClientHandler());

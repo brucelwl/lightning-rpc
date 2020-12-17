@@ -2,6 +2,7 @@ package com.bruce.lightning.rpc.server;
 
 import com.bruce.lightning.rpc.server.initial.marshalling.MarshallingServerHandlerChannelInitializer;
 import com.bruce.lightning.rpc.util.PlatformUtil;
+import com.bruce.lightning.rpc.util.ReflectUtils;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
@@ -10,6 +11,7 @@ import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.util.concurrent.DefaultThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,8 +40,14 @@ public class LightningServer {
      * 同步连接
      */
     public void startSync() {
-        acceptGroup = PlatformUtil.isLinux() ? new EpollEventLoopGroup(2) : new NioEventLoopGroup(1);
-        workerGroup = PlatformUtil.isLinux() ? new EpollEventLoopGroup() : new NioEventLoopGroup();
+        DefaultThreadFactory acceptThreadFactory = new DefaultThreadFactory("RpcServerAccept-");
+        ReflectUtils.set(acceptThreadFactory, DefaultThreadFactory.class, "prefix", "RpcServerAccept-");
+
+        DefaultThreadFactory workerThreadFactory = new DefaultThreadFactory("RpcServerWorker-");
+        ReflectUtils.set(workerThreadFactory, DefaultThreadFactory.class, "prefix", "RpcServerWorker-");
+
+        acceptGroup = PlatformUtil.isLinux() ? new EpollEventLoopGroup(1, acceptThreadFactory) : new NioEventLoopGroup(1, acceptThreadFactory);
+        workerGroup = PlatformUtil.isLinux() ? new EpollEventLoopGroup(workerThreadFactory) : new NioEventLoopGroup(workerThreadFactory);
         Class<? extends ServerSocketChannel> serverSocketChannelClass = PlatformUtil.isLinux() ? EpollServerSocketChannel.class : NioServerSocketChannel.class;
 
         ServerBootstrap bootstrap = new ServerBootstrap();
