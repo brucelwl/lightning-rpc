@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.bruce.rpc</groupId>
+		<artifactId>lightning-parent</artifactId>
+		<version>1.0</version>
+	</parent>
+
+	<artifactId>lightning-rpc-example</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>lightning-rpc-example</name>
+	<description>Demo project for Spring Boot</description>
+
+	<properties>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<modules>
+		<module>rpc-provider</module>
+		<module>rpc-consumer</module>
+		<module>rpc-interface</module>
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.bruce.rpc</groupId>
+				<artifactId>lightning-rpc</artifactId>
+				<version>1.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.bruce.rpc</groupId>
+				<artifactId>rpc-interface</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
+
+</project>

@@ -2,6 +2,7 @@ package com.bruce.lightning.rpc.server.handler;
 
 import com.bruce.lightning.rpc.common.RpcRequest;
 import com.bruce.lightning.rpc.common.RpcResponse;
+import com.bruce.lightning.rpc.server.RpcContext;
 import com.bruce.lightning.rpc.server.mapping.BeanMethodContext;
 import com.bruce.lightning.rpc.util.ReflectUtils;
 import io.netty.channel.ChannelHandlerContext;
@@ -21,6 +22,8 @@ public class RpcServerHandler extends ChannelInboundHandlerAdapter {
 
     static final ChannelGroup channels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 
+
+
     static {
         DefaultThreadFactory threadFactory = new DefaultThreadFactory("RpcServerHandler-");
         ReflectUtils.set(threadFactory, DefaultThreadFactory.class, "prefix", "RpcServerHandler-");
@@ -31,6 +34,7 @@ public class RpcServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         channels.add(ctx.channel());
+
     }
 
     @Override
@@ -43,14 +47,19 @@ public class RpcServerHandler extends ChannelInboundHandlerAdapter {
         eventExecutors.execute(new Runnable() {
             @Override
             public void run() {
-                RpcResponse response = BeanMethodContext.process(request);
-                ctx.writeAndFlush(response);
+                try {
+                    RpcContext.set(ctx);
 
-                log.info("服务端响应:{}", request.getId());
+                    RpcResponse response = BeanMethodContext.process(request);
+                    ctx.writeAndFlush(response);
+
+                    log.info("服务端响应:{}", request.getId());
+
+                } finally {
+                    RpcContext.remove();
+                }
             }
         });
-
-
     }
 
     @Override

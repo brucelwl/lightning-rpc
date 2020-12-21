@@ -28,6 +28,7 @@
     <modules>
         <module>lightning-rpc</module>
         <module>lightning-rpc-demo</module>
+        <module>lightning-rpc-example</module>
         <module>netty-hello</module>
     </modules>
 
